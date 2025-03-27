@@ -1,0 +1,19 @@
+server {
+  listen 443 ssl;
+  ssl_certificate /etc/ssl/certs/cert.crt;
+  ssl_certificate_key /etc/ssl/private/cert.key;
+
+	server_name foo.com;
+
+	root /var/www/foo.com;
+	index index.html;
+
+
+	location / {
+		proxy_pass http://app:3000;
+
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-Proto https;
+    proxy_set_header X-Real-IP $remote_addr;
+	}
+}

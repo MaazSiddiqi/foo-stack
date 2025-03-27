@@ -1,0 +1,23 @@
+FROM ubuntu:24.04
+
+RUN apt update && apt install -y nginx
+
+COPY foo-site-config /etc/nginx/sites-available/foo.com
+
+RUN ln -s /etc/nginx/sites-available/foo.com /etc/nginx/sites-enabled/foo.com
+RUN ln -sf /dev/stdout /var/log/nginx/access.log && ln -sf /dev/stderr /var/log/nginx/error.log
+
+RUN mkdir -p /var/www/foo.com
+RUN mkdir -p /etc/ssl/certs
+RUN mkdir -p /etc/ssl/private
+
+COPY index.html /var/www/foo.com/index.html
+COPY app.html /var/www/foo.com/app.html
+COPY cert.crt /etc/ssl/certs/cert.crt
+COPY cert.key /etc/ssl/private/cert.key
+
+
+EXPOSE 80
+EXPOSE 443
+
+CMD ["nginx", "-g", "daemon off;"]
